@@ -2,34 +2,36 @@ package devices;
 
 public class Device {
     private String name;
-    private boolean status;
     private double powerConsumption;
+    private boolean isOn;
 
     public Device(String name, double powerConsumption) {
         this.name = name;
         this.powerConsumption = powerConsumption;
-        this.status = false;
+        this.isOn = false;
     }
 
     public String getName() {
         return name;
     }
 
+    public double getPowerConsumption() {
+        return isOn ? powerConsumption : 0.0;
+    }
+
     public boolean isOn() {
-        return status;
+        return isOn;
     }
 
     public void turnOn() {
-        status = true;
-        System.out.println(name + " is turned ON.");
+        this.isOn = true;
     }
 
     public void turnOff() {
-        status = false;
-        System.out.println(name + " is turned OFF.");
+        this.isOn = false;
     }
 
-    public double getPowerConsumption() {
-        return status ? powerConsumption : 0;
+    public void toggle() {
+        this.isOn = !this.isOn;
     }
 }

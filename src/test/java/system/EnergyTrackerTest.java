@@ -2,48 +2,37 @@ package system;
 
 import devices.Device;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 class EnergyTrackerTest {
-
     @Test
-    void testEnergyUsageLogging() {
-        // Create the system and energy tracker
+    void testLogEnergyUsage() {
         SmartHomeSystem system = new SmartHomeSystem();
-        EnergyTracker tracker = new EnergyTracker(system);
+        EnergyTracker tracker = new EnergyTracker();
 
-        // Add devices
         Device light = new Device("Light", 60);
         Device fan = new Device("Fan", 75);
         system.addDevice(light);
         system.addDevice(fan);
 
-        // Turn on both devices
         light.turnOn();
         fan.turnOn();
 
-        // Capture the output of printEnergyUsage
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        PrintStream originalOut = System.out;
-        System.setOut(new PrintStream(outputStream));
+        tracker.logEnergyUsage(system);
+        Map<String, Double> summary = tracker.getEnergyUsageSummary();
 
-        // Log and print energy usage
-        tracker.printEnergyUsage();
-
-        // Reset System.out to original
-        System.setOut(originalOut);
-
-        // Validate the output contains expected information
-        String output = outputStream.toString();
-        assertTrue(output.contains("Energy usage per device:"));
-        assertTrue(output.contains("Light: 60.0 watts."));
-        assertTrue(output.contains("Fan: 75.0 watts."));
-
-        // Check if the total power usage is correct (light + fan = 135 watts)
-        assertEquals(135, system.calculateTotalPowerUsage());
+        assertEquals(60.0, summary.get("Light"));
+        assertEquals(75.0, summary.get("Fan"));
     }
 
+    @Test
+    void testResetEnergyLogs() {
+        EnergyTracker tracker = new EnergyTracker();
+        tracker.logEnergyUsage(new SmartHomeSystem()); // Log some usage
+        tracker.resetEnergyLogs();
+        assertTrue(tracker.getEnergyUsageSummary().isEmpty());
+    }
 }

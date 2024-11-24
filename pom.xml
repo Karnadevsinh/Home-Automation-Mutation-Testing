@@ -54,6 +54,9 @@
                     <targetTests>
                         <param>system.*Test</param>
                     </targetTests>
+                    <mutators>
+                        <mutator>ALL</mutator>
+                    </mutators>
                 </configuration>
                 <executions>
                     <execution>
