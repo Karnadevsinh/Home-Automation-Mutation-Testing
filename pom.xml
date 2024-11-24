@@ -50,9 +50,11 @@
                 <configuration>
                     <targetClasses>
                         <param>system.*</param>
+                        <param>devices.*</param>
                     </targetClasses>
                     <targetTests>
                         <param>system.*Test</param>
+                        <param>devices.*Test</param>
                     </targetTests>
                     <mutators>
                         <mutator>ALL</mutator>

@@ -9,51 +9,50 @@ import java.time.LocalTime;
 
 public class Main {
     public static void main(String[] args) {
-        // Initialize SmartHomeSystem
         SmartHomeSystem homeSystem = new SmartHomeSystem();
 
-        // Create devices
+        // Add devices
         Device light = new Device("Living Room Light", 60);
         Device fan = new Device("Ceiling Fan", 75);
         Device heater = new Device("Water Heater", 2000);
 
-        // Add devices to the system
         homeSystem.addDevice(light);
         homeSystem.addDevice(fan);
         homeSystem.addDevice(heater);
 
-        // Initialize RuleEngine and EnergyTracker
         RuleEngine ruleEngine = new RuleEngine(homeSystem);
         EnergyTracker energyTracker = new EnergyTracker();
 
-        // Apply rules for automatic device control
-        System.out.println("Applying rules...");
-        ruleEngine.applyRule("Living Room Light", LocalTime.of(18, 0), LocalTime.of(23, 0));
+        // Device scheduling
+        System.out.println("Scheduling devices...");
+        homeSystem.scheduleDevice("Living Room Light", LocalTime.of(18, 0), LocalTime.of(22, 0));
+
+        // Apply rules
         ruleEngine.applyRule("Water Heater", LocalTime.of(6, 0), LocalTime.of(8, 0));
 
-        // Log and print initial energy usage
-        System.out.println("\nInitial energy usage:");
+        // Group operations
+        homeSystem.createGroup("Living Room Devices", light, fan);
+        homeSystem.controlGroup("Living Room Devices", true); // Turn on all devices in the group
+
+        // Monitor energy usage
         energyTracker.logEnergyUsage(homeSystem);
         energyTracker.printEnergyUsage();
 
-        // Manually control a device
-        System.out.println("\nTurning on the Ceiling Fan...");
-        homeSystem.controlDevice("Ceiling Fan", true);
+        // Threshold alerts
+        homeSystem.setEnergyThreshold(100);
+        if (homeSystem.isThresholdExceeded()) {
+            System.out.println("Energy threshold exceeded! Please turn off some devices.");
+        }
 
-        // Log and print updated energy usage
-        System.out.println("\nUpdated energy usage:");
-        energyTracker.logEnergyUsage(homeSystem);
-        energyTracker.printEnergyUsage();
+        // Maintenance reminders
+        homeSystem.checkMaintenanceReminders();
 
-        // Show active devices
-        System.out.println("\nActive devices:");
-        homeSystem.getActiveDevices().forEach(device ->
-                System.out.println(device.getName() + " is ON"));
+        // Voice commands
+        System.out.println("Voice command: Turn off the Ceiling Fan");
+        homeSystem.executeVoiceCommand("Turn off the Ceiling Fan");
 
-        // Turn off all devices and show the final state
-        System.out.println("\nTurning off all devices...");
+        // Shut down system
         homeSystem.controlAllDevices(false);
-
-        System.out.println("All devices are now OFF.");
+        System.out.println("System shut down.");
     }
 }
